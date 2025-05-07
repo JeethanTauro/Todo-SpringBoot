@@ -4,6 +4,7 @@ package com.todo.To_Do.Controller;
 import com.todo.To_Do.Entity.ToDo;
 import com.todo.To_Do.Services.ToDoServices;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -14,28 +15,24 @@ public class ToDoController {
 
     @Autowired
     private ToDoServices toDoServices;
-
     @GetMapping
-    public List<ToDo> getAllToDo(){
+    public ResponseEntity<List<ToDo>> getAllToDo(){
         return toDoServices.getAll();
     }
     @GetMapping("id/{myId}")
-    public ToDo getToDoById(@PathVariable String myId){
+    public ResponseEntity<?> getToDoById(@PathVariable String myId){
         return toDoServices.getById(myId);
     }
     @PostMapping
-    public boolean enterToDo(@RequestBody ToDo toDo){
-        toDoServices.enter(toDo);
-        return true;
+    public ResponseEntity<?> enterToDo(@RequestBody ToDo toDo){
+        return toDoServices.enter(toDo);
     }
     @DeleteMapping("id/{myId}")
-    public boolean deleteToDo(@PathVariable String myId){
-        toDoServices.delete(myId);
-        return true;
+    public ResponseEntity<?> deleteToDo(@PathVariable String myId){
+        return toDoServices.delete(myId);
     }
     @PutMapping("id/{myId}")
-    public boolean updateToDo(@PathVariable String myId, @RequestBody ToDo newToDo){
-        toDoServices.update(myId,newToDo);
-        return true;
+    public ResponseEntity<?> updateToDo(@PathVariable String myId, @RequestBody ToDo newToDo){
+        return toDoServices.update(myId,newToDo);
     }
 }

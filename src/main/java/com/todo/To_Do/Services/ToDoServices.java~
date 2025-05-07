@@ -76,7 +76,7 @@ public class ToDoServices {
            }
            else{
                toDoRepo.save(todo);
-               return new ResponseEntity<>(todo,HttpStatus.CREATED);
+               return new ResponseEntity<>(todo,HttpStatus.OK);
            }
 
        } catch (Exception e) {
