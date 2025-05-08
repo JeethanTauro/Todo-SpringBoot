@@ -15,6 +15,14 @@ public class ToDo {
 
     private String title;
     private String content;
-    private boolean isCompleted;
+    private boolean completed;
+
+    public boolean isCompleted() {
+        return completed;
+    }
+    public void setCompleted(boolean completed) {
+        this.completed = completed;
+    }
+
 
 }

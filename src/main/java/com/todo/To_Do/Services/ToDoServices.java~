@@ -2,7 +2,9 @@ package com.todo.To_Do.Services;
 
 
 import com.todo.To_Do.Entity.ToDo;
+import com.todo.To_Do.Entity.User;
 import com.todo.To_Do.Repository.ToDoRepo;
+import com.todo.To_Do.Repository.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,34 +16,41 @@ import java.util.*;
 public class ToDoServices {
     @Autowired
     private ToDoRepo toDoRepo;
+    @Autowired
+    private UserServices userServices;
+    @Autowired
+    private UserRepo userRepo;
 
-    public ResponseEntity<List<ToDo>> getAll(){
+    public ResponseEntity<List<ToDo>> getAll(String userName){
         try{
-            Iterable<ToDo> iterable = toDoRepo.findAll();
-            List<ToDo> list = new ArrayList<>();
-            for(ToDo todo : iterable){
-                list.add(todo);
-            }
+            User user = userRepo.findByUserName(userName);
+            List<ToDo> list = user.getToDoList();
             return new ResponseEntity<>( list, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
     }
-    public ResponseEntity<?> enter(ToDo todo){
+    public ResponseEntity<?> enter(String userName , ToDo todo){
         try{
-            toDoRepo.save(todo);
+            ToDo saved = toDoRepo.save(todo);
+            User user = userRepo.findByUserName(userName);
+            user.getToDoList().add(saved);
+            userServices.enter(user);
             return new ResponseEntity<>(todo , HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
     }
-    public ResponseEntity<?> delete(String id){
+    public ResponseEntity<?> delete(String userName,String id){
         try{
             Optional<ToDo> optional = toDoRepo.findById(id);
+            User user = userRepo.findByUserName(userName);
             if(optional.isPresent()){
                 toDoRepo.deleteById(id);
+                user.getToDoList().removeIf(x->x.getId().equals(id));
+                userServices.enter(user);
                 return new ResponseEntity<>(optional.get() , HttpStatus.OK);
             }
             else {
@@ -60,8 +69,9 @@ public class ToDoServices {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
-    public ResponseEntity<ToDo> update(String id, ToDo todo){
+    public ResponseEntity<ToDo> update(String userName,String id, ToDo todo){
        try{
+           User user = userRepo.findByUserName(userName);
            Optional<ToDo> optional = toDoRepo.findById(id);
            if(optional.isPresent()){
                ToDo oldToDo = optional.get();
@@ -72,9 +82,11 @@ public class ToDoServices {
                    oldToDo.setTitle(todo.getTitle());
                }
                if(!Objects.equals(oldToDo.isCompleted(),todo.isCompleted())){
-                   oldToDo.setIsCompleted(todo.isCompleted());
+                   oldToDo.setCompleted(todo.isCompleted());
                }
-               toDoRepo.save(oldToDo);
+               ToDo saved = toDoRepo.save(oldToDo);
+               user.getToDoList().add(saved);
+               userServices.enter(user);
                return new ResponseEntity<>(oldToDo,HttpStatus.OK);
            }
            // I have decided not to create a new
