@@ -1,0 +1,41 @@
+package com.todo.To_Do.Controller;
+
+
+import com.todo.To_Do.Entity.ToDo;
+import com.todo.To_Do.Entity.User;
+import com.todo.To_Do.Services.ToDoServices;
+import com.todo.To_Do.Services.UserServices;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/user")
+public class UserController {
+
+    @Autowired
+    private UserServices userServices;
+    @GetMapping
+    public ResponseEntity<List<User>> getAllUser(){
+        return userServices.getAll();
+    }
+    @GetMapping("{userName}")
+    public ResponseEntity<?> getUserByUserName(@PathVariable String userName){
+        return userServices.getByUserName(userName);
+    }
+    @PostMapping
+    public ResponseEntity<?> enterUser(@RequestBody User user){
+        return userServices.enter(user);
+    }
+    @DeleteMapping("{userName}")
+    public ResponseEntity<?> deleteUser(@PathVariable String userName){
+        return userServices.delete(userName);
+    }
+    //i am doing this because so that we dont have to specif the user in the endpoint itself it seems impractical
+    @PutMapping
+    public ResponseEntity<?> updateUser(@RequestBody User user){
+        return userServices.update(user.getUserName(),user);
+    }
+}

@@ -32,8 +32,7 @@ public class ToDoController {
         return toDoServices.delete(myId);
     }
     @PutMapping("id/{myId}")
-    public boolean updateToDo(@PathVariable String myId, @RequestBody ToDo newToDo){
-        toDoServices.update(myId,newToDo);
-        return true;
+    public ResponseEntity<?> updateToDo(@PathVariable String myId, @RequestBody ToDo newToDo){
+        return toDoServices.update(myId,newToDo);
     }
 }

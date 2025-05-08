@@ -74,9 +74,12 @@ public class ToDoServices {
                toDoRepo.save(oldToDo);
                return new ResponseEntity<>(oldToDo,HttpStatus.OK);
            }
+           // I have decided not to create a new
+           // todo_data because it might create some issues as
+           // the user might think he update but instead it
+           // created it
            else{
-               toDoRepo.save(todo);
-               return new ResponseEntity<>(todo,HttpStatus.CREATED);
+               return new ResponseEntity<>(HttpStatus.NOT_FOUND);
            }
 
        } catch (Exception e) {
