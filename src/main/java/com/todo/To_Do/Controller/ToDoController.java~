@@ -31,8 +31,9 @@ public class ToDoController {
     public ResponseEntity<?> deleteToDo(@PathVariable String myId){
         return toDoServices.delete(myId);
     }
-    @PutMapping("id/{myId}")
-    public ResponseEntity<?> updateToDo(@PathVariable String myId, @RequestBody ToDo newToDo){
-        return toDoServices.update(myId,newToDo);
+    //here i am not putting the id param beacuse it is impractical that the user should give the id
+    @PutMapping
+    public ResponseEntity<?> updateToDo( @RequestBody ToDo newToDo){
+        return toDoServices.update(newToDo.getId(), newToDo);
     }
 }

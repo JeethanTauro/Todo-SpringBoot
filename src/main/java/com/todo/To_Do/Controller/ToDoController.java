@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/edit")
+@RequestMapping("/todo") //changed from /edit to /todo
 public class ToDoController {
 
     @Autowired

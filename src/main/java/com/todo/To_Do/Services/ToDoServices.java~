@@ -72,7 +72,7 @@ public class ToDoServices {
                    oldToDo.setTitle(todo.getTitle());
                }
                if(!Objects.equals(oldToDo.isCompleted(),todo.isCompleted())){
-                   oldToDo.setCompleted(todo.isCompleted());
+                   oldToDo.setIsCompleted(todo.isCompleted());
                }
                toDoRepo.save(oldToDo);
                return new ResponseEntity<>(oldToDo,HttpStatus.OK);
