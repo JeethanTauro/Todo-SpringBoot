@@ -5,6 +5,7 @@ import com.todo.To_Do.Entity.ToDo;
 import com.todo.To_Do.Entity.User;
 import com.todo.To_Do.Repository.ToDoRepo;
 import com.todo.To_Do.Repository.UserRepo;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,6 +32,7 @@ public class ToDoServices {
         }
 
     }
+    @Transactional
     public ResponseEntity<?> enter(String userName , ToDo todo){
         try{
             ToDo saved = toDoRepo.save(todo);
@@ -43,6 +45,7 @@ public class ToDoServices {
         }
 
     }
+    @Transactional
     public ResponseEntity<?> delete(String userName,String id){
         try{
             Optional<ToDo> optional = toDoRepo.findById(id);
@@ -69,6 +72,7 @@ public class ToDoServices {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
+    @Transactional
     public ResponseEntity<ToDo> update(String userName,String id, ToDo todo){
        try{
            User user = userRepo.findByUserName(userName);
