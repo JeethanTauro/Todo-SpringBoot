@@ -33,7 +33,7 @@ public class UserController {
     public ResponseEntity<?> deleteUser(@PathVariable String userName){
         return userServices.delete(userName);
     }
-
+    //i am doing this because so that we dont have to specif the user in the endpoint itself it seems impractical
     @PutMapping("{userName}")
     public ResponseEntity<?> updateUser(@PathVariable String userName, @RequestBody User user){
         return userServices.update(userName , user);
