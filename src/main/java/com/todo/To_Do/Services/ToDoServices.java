@@ -8,6 +8,7 @@ import com.todo.To_Do.Repository.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,6 +22,8 @@ public class ToDoServices {
     private UserServices userServices;
     @Autowired
     private UserRepo userRepo;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     public ResponseEntity<List<ToDo>> getAll(String userName){
         try{
@@ -37,8 +40,11 @@ public class ToDoServices {
         try{
             ToDo saved = toDoRepo.save(todo);
             User user = userRepo.findByUserName(userName);
+            if(user == null){
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
             user.getToDoList().add(saved);
-            userServices.enter(user);
+            userServices.saveUser(user);
             return new ResponseEntity<>(todo , HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -53,7 +59,7 @@ public class ToDoServices {
             if(optional.isPresent()){
                 toDoRepo.deleteById(id);
                 user.getToDoList().removeIf(x->x.getId().equals(id));
-                userServices.enter(user);
+                userServices.saveUser(user);
                 return new ResponseEntity<>(optional.get() , HttpStatus.OK);
             }
             else {
@@ -63,7 +69,11 @@ public class ToDoServices {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
-    public ResponseEntity<?> getById(String id){
+    public ResponseEntity<?> getById(String userName,String id){
+        User user = userRepo.findByUserName(userName);
+        if(user==null){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
         Optional<ToDo> optional = toDoRepo.findById(id);
         if(optional.isPresent()){
             return new ResponseEntity<>(optional.get() , HttpStatus.OK);
@@ -91,7 +101,7 @@ public class ToDoServices {
                ToDo saved = toDoRepo.save(oldToDo);
                user.getToDoList().removeIf(x -> x.getId().equals(saved.getId()));
                user.getToDoList().add(saved);
-               userServices.enter(user);
+               userServices.saveUser(user);
                return new ResponseEntity<>(oldToDo,HttpStatus.OK);
            }
            // I have decided not to create a new

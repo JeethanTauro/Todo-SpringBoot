@@ -1,9 +1,7 @@
 package com.todo.To_Do.Controller;
 
 
-import com.todo.To_Do.Entity.ToDo;
 import com.todo.To_Do.Entity.User;
-import com.todo.To_Do.Services.ToDoServices;
 import com.todo.To_Do.Services.UserServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -12,8 +10,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/user")
-public class UserController {
+@RequestMapping("/user/admin")
+public class AdminUserController {
 
     @Autowired
     private UserServices userServices;
@@ -25,10 +23,7 @@ public class UserController {
     public ResponseEntity<?> getUserByUserName(@PathVariable String userName){
         return userServices.getByUserName(userName);
     }
-    @PostMapping
-    public ResponseEntity<?> enterUser(@RequestBody User user){
-        return userServices.enter(user);
-    }
+
     @DeleteMapping("{userName}")
     public ResponseEntity<?> deleteUser(@PathVariable String userName){
         return userServices.delete(userName);

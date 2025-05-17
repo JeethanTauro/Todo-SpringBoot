@@ -1,23 +1,25 @@
 package com.todo.To_Do.Services;
 
 
-import com.todo.To_Do.Entity.ToDo;
 import com.todo.To_Do.Entity.User;
 import com.todo.To_Do.Repository.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
 @Service
 public class UserServices {
     @Autowired
     private UserRepo userRepo;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     public ResponseEntity<List<User>> getAll(){
         try{
@@ -32,8 +34,9 @@ public class UserServices {
         }
 
     }
-    public ResponseEntity<?> enter(User user){
+    public ResponseEntity<?> saveNewUser(User user){
         try{
+            user.setUserPassword(passwordEncoder.encode(user.getUserPassword()));
             userRepo.save(user);
             return new ResponseEntity<>(user , HttpStatus.CREATED);
         } catch (Exception e) {
@@ -74,6 +77,7 @@ public class UserServices {
                if(!Objects.equals(oldUser.getUserPassword(), user.getUserPassword())){
                    oldUser.setUserPassword(user.getUserPassword());
                }
+               oldUser.setUserPassword(passwordEncoder.encode(user.getUserPassword()));
                userRepo.save(oldUser);
                return new ResponseEntity<>(oldUser,HttpStatus.OK);
            }
@@ -85,5 +89,14 @@ public class UserServices {
        } catch (Exception e) {
            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
        }
+    }
+    public ResponseEntity<?> saveUser(User user){
+        try{
+            userRepo.save(user);
+            return new ResponseEntity<>(user , HttpStatus.CREATED);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
     }
 }

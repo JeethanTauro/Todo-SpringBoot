@@ -25,6 +25,7 @@ public class User {
     private String userPassword;
 
     @DBRef
-    List<ToDo> toDoList = new ArrayList<>();
+    private List<ToDo> toDoList = new ArrayList<>();
+
 
 }

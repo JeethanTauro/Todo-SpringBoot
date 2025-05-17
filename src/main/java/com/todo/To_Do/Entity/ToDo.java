@@ -4,6 +4,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document(collection = "todo_entries")
@@ -16,6 +17,8 @@ public class ToDo {
     private String title;
     private String content;
     private boolean completed;
+    @DBRef
+    private String user;
 
     public boolean isCompleted() {
         return completed;
