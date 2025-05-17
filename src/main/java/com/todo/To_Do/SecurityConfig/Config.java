@@ -27,10 +27,12 @@ public class Config {
     public SecurityFilterChain securityFilterChain(HttpSecurity http,AuthenticationManager authManager) throws Exception {
         http.csrf(csrf -> csrf.disable()).
                authorizeHttpRequests(auth->
-                auth.requestMatchers("/todo/user/**").authenticated().
-                        anyRequest().
-                        permitAll()).
-                 authenticationManager(authManager);
+                auth.requestMatchers("/todo/user/**")
+                        .authenticated()
+                        .requestMatchers("/admin/**").hasRole("ADMIN")
+                        .anyRequest()
+                        .permitAll())
+                        .authenticationManager(authManager);
 
         http.httpBasic(Customizer.withDefaults()); // for postman
 

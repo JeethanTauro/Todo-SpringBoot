@@ -1,0 +1,34 @@
+package com.todo.To_Do.Controller;
+
+import com.todo.To_Do.Entity.User;
+import com.todo.To_Do.Services.UserServices;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/admin")
+public class AdminController {
+    @Autowired
+    UserServices userServices;
+    @GetMapping("all-users")
+    public ResponseEntity<List<User>> getAllUsers(){
+        return userServices.getAll();
+    }
+    @PostMapping("add-new-admin")
+    public ResponseEntity<User> addNewAdmin(@RequestBody User user){
+        return userServices.saveAdmin(user);
+    }
+    @PutMapping("promote-to-admin")
+    public ResponseEntity<User> promoteToAdmin(@RequestBody User user){
+        String userName = user.getUserName();
+        return userServices.promoteToAdmin(userName);
+    }
+    @PutMapping("demote-from-admin")
+    public ResponseEntity<User> demoteFromAdmin(@RequestBody User user){
+        String userName = user.getUserName();
+        return null;
+    }
+}

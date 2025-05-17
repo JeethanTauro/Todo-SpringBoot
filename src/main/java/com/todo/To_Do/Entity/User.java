@@ -27,5 +27,6 @@ public class User {
     @DBRef
     private List<ToDo> toDoList = new ArrayList<>();
 
+    List<Roles> roles;
 
 }

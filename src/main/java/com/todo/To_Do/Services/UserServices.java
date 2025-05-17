@@ -1,6 +1,7 @@
 package com.todo.To_Do.Services;
 
 
+import com.todo.To_Do.Entity.Roles;
 import com.todo.To_Do.Entity.User;
 import com.todo.To_Do.Repository.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +11,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -37,6 +39,7 @@ public class UserServices {
     public ResponseEntity<?> saveNewUser(User user){
         try{
             user.setUserPassword(passwordEncoder.encode(user.getUserPassword()));
+            user.setRoles(Arrays.asList(Roles.USER));
             userRepo.save(user);
             return new ResponseEntity<>(user , HttpStatus.CREATED);
         } catch (Exception e) {
@@ -90,13 +93,62 @@ public class UserServices {
            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
        }
     }
-    public ResponseEntity<?> saveUser(User user){
+    // save user without encoding the encoded password again
+    public ResponseEntity<User> saveUser(User user){
         try{
             userRepo.save(user);
             return new ResponseEntity<>(user , HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
+
+    }
+
+    //add an admin
+    public ResponseEntity<User> saveAdmin(User user){
+        try{
+            user.setUserPassword(passwordEncoder.encode(user.getUserPassword()));
+            user.setRoles(Arrays.asList(Roles.USER, Roles.ADMIN));
+            userRepo.save(user);
+            return new ResponseEntity<>(user , HttpStatus.CREATED);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+    }
+
+    public ResponseEntity<User> promoteToAdmin(String userName){
+        try{
+            User oldUser = userRepo.findByUserName(userName);
+            if(oldUser != null){
+                if(!oldUser.getRoles().contains(Roles.ADMIN)){
+                  oldUser.getRoles().add(Roles.ADMIN);
+                }
+                userRepo.save(oldUser);
+                return new ResponseEntity<>(oldUser,HttpStatus.OK);
+            }
+            else{
+                return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
+            }
+
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
+    public ResponseEntity<User> demoteFromAdmin(String userName){
+        User oldUser = userRepo.findByUserName(userName);
+        if(oldUser!=null){
+            List<Roles> roles = oldUser.getRoles();
+            if(oldUser.getRoles().contains(Roles.ADMIN) && roles != null){
+                oldUser.getRoles().remove(Roles.ADMIN);
+                userRepo.save(oldUser);
+                return new ResponseEntity<>(oldUser,HttpStatus.OK);
+            }
+            else {
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            }
+        }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 
     }
 }

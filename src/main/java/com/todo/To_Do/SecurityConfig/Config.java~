@@ -20,17 +20,18 @@ public class Config {
     @Autowired
     private UserServiceImpl userService;
     @Autowired
-    PasswordEncoderBean passwordEncoderBean;
+    PasswordEncoder passwordEncoder;
 
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http,AuthenticationManager authManager) throws Exception {
         http.csrf(csrf -> csrf.disable()).
                authorizeHttpRequests(auth->
-                auth.requestMatchers("/todo/user/**").authenticated().
-                        anyRequest().
-                        permitAll()).
-                 authenticationManager(authManager);
+                auth.requestMatchers("/todo/user/**")
+                        .authenticated()
+                        .anyRequest()
+                        .permitAll())
+                        .authenticationManager(authManager);
 
         http.httpBasic(Customizer.withDefaults()); // for postman
 
@@ -40,7 +41,7 @@ public class Config {
     public DaoAuthenticationProvider authProvider() {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
         authProvider.setUserDetailsService(userService);
-        authProvider.setPasswordEncoder(passwordEncoderBean.passwordEncoder());
+        authProvider.setPasswordEncoder(passwordEncoder);
         return authProvider;
     }
     @Bean

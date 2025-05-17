@@ -10,6 +10,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
+import java.util.stream.Collectors;
+
 @Service
 public class UserServiceImpl implements UserDetailsService {
     @Autowired
@@ -28,6 +30,7 @@ public class UserServiceImpl implements UserDetailsService {
         return org.springframework.security.core.userdetails.User.builder()
                 .username(user.getUserName())
                 .password(user.getUserPassword())
+                .roles(user.getRoles().stream().map(Enum::name).toArray(String[]::new)) //converted enum to strings
                 .build();
     }
 }

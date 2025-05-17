@@ -1,0 +1,5 @@
+package com.todo.To_Do.Entity;
+
+public enum Enum_Roles {
+    ADMIN, USER;
+}
