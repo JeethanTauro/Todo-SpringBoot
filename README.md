@@ -115,9 +115,3 @@ To set this project up on your local system from GitHub:
 
 ---
 
-##  Contact
-
-**Author** : Jeethan Tauro, was happy to share this with you, wanna connect? Do reach out!
-
----
-

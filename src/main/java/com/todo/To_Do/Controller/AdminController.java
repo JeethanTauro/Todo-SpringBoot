@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/admin")
+@RequestMapping("/admin") //adding a comment for anchor testing
 public class AdminController {
     @Autowired
     UserServices userServices;
